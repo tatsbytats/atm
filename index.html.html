@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATM - Bank of Simplicity</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    background-image: url('https://scontent.flgp1-1.fna.fbcdn.net/v/t1.15752-9/473262642_1578714582815798_3803790128388734321_n.png?_nc_cat=111&ccb=1-7&_nc_sid=0024fc&_nc_eui2=AeHNlujPBXt80BOWAJcIbH9lhbR19oLeK1CFtHX2gt4rUNDc_ir1ZPAcElRSyb306Q6wP6FaqlccFmfK4WCGWFYy&_nc_ohc=gB8tuluK6NYQ7kNvgHVBATl&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.flgp1-1.fna&oh=03_Q7cD1gGBBmEiGJzA-lEzoc569Ilob0e1P8pKmAmLf8VDlcddTw&oe=67B7E520'); /* Replace with your image path */
+    background-repeat: repeat; /* This will make the background image repeat */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+        .atm-container {
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            width: 350px;
+            display: none;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .options button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .options button:hover {
+            background-color: #0056b3;
+        }
+
+        .balance,
+        .action-input {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .action-input input {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+
+        .pin-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            background-color: #f7f7f7;
+        }
+
+        .pin-input {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .pin-input input {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100px;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .pin-input button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .pin-input button:hover {
+            background-color: #0056b3;
+        }
+
+        .change-pin-container {
+            display: none;
+            text-align: center;
+        }
+
+        .change-pin-container input {
+            width: 100px;
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .change-pin-container button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .change-pin-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .transaction-container {
+            display: none;
+            text-align: center;
+        }
+
+        .transaction-container input {
+            margin-top: 10px;
+            padding: 10px;
+            width: 80%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .transaction-container button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .transaction-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .quick-withdraw-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .quick-withdraw-buttons button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 60px;
+        }
+
+        .quick-withdraw-buttons button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pin-container" id="pinContainer">
+        <div class="pin-input">
+            <h1>BANCO DE MONIK</h1>
+            <h2>Enter Your PIN</h2>
+            <input type="password" id="pinInput" maxlength="6" placeholder="******">
+            <button onclick="validatePin()">Submit</button>
+            <div id="pinError" class="error-message" style="display: none;">Incorrect PIN. Please try again.</div>
+        </div>
+    </div>
+
+    <div class="atm-container" id="atmContainer">
+        <h1>Banco De Monik</h1>
+        <div class="options">
+            <button onclick="showChangePin()">Change PIN</button>
+            <button onclick="showWithdraw()">Withdraw</button>
+            <button onclick="showDeposit()">Deposit</button>
+            <button onclick="checkBalance()">Check Balance</button>
+        </div>
+    </div>
+
+    <div class="transaction-container" id="withdrawContainer">
+        <h2>Withdraw Funds</h2>
+        <input type="number" id="withdrawAmount" placeholder="Amount to withdraw" step="0.01">
+        <div class="quick-withdraw-buttons">
+            <button onclick="quickWithdraw(100)">100</button>
+            <button onclick="quickWithdraw(200)">200</button>
+            <button onclick="quickWithdraw(300)">300</button>
+            <button onclick="quickWithdraw(400)">400</button>
+            <button onclick="quickWithdraw(500)">500</button>
+            <button onclick="quickWithdraw(1000)">1000</button>
+            <button onclick="quickWithdraw(5000)">5000</button>
+            <button onclick="quickWithdraw(10000)">10000</button>
+        </div>
+        <button onclick="withdraw()">Withdraw</button>
+        <div id="withdrawError" class="error-message" style="display: none;">Invalid amount.</div>
+    </div>
+
+    <div class="transaction-container" id="depositContainer">
+        <h2>Deposit Funds</h2>
+        <input type="number" id="depositAmount" placeholder="Amount to deposit" step="0.01">
+        <button onclick="deposit()">Deposit</button>
+        <div id="depositError" class="error-message" style="display: none;">Invalid amount.</div>
+    </div>
+
+    <div class="change-pin-container" id="changePinContainer">
+        <h2>Change Your PIN</h2>
+        <input type="password" id="currentPin" placeholder="Enter current PIN" maxlength="6">
+        <input type="password" id="newPin" placeholder="Enter new PIN" maxlength="6">
+        <input type="password" id="confirmPin" placeholder="Confirm new PIN" maxlength="6">
+        <button onclick="changePin()">Change PIN</button>
+        <div id="changePinError" class="error-message" style="display: none;">Error: PINs do not match or invalid PIN.</div>
+    </div>
+
+    <script>
+        let account = {
+            balance: 1000.00,
+            pin: '123456',
+        };
+
+        function validatePin() {
+            const enteredPin = document.getElementById("pinInput").value;
+            if (enteredPin === account.pin) {
+                // Hide PIN input and show ATM menu
+                document.getElementById("pinContainer").style.display = "none";
+                document.getElementById("atmContainer").style.display = "block";
+                updateBalance(); // Update balance on login
+            } else {
+                // Show error message
+                document.getElementById("pinError").style.display = "block";
+            }
+        }
+
+        function showWithdraw() {
+            document.getElementById("atmContainer").style.display = "none";
+            document.getElementById("withdrawContainer").style.display = "block";
+        }
+
+        function showDeposit() {
+            document.getElementById("atmContainer").style.display = "none";
+            document.getElementById("depositContainer").style.display = "block";
+        }
+
+        function withdraw() {
+    const amount = parseFloat(document.getElementById("withdrawAmount").value);
+    
+    // Check if the amount is exactly 300
+    if (amount === 300) {
+        alert("NYAN PANG CHECK IN");
+    }
+
+    // Check if the amount is valid (greater than 0 and less than or equal to balance)
+    if (!isNaN(amount) && amount > 0 && amount <= account.balance) {
+        account.balance -= amount;
+        updateBalance();
+        alert(`Withdrawal successful! You withdrew ${amount.toFixed(2)} PETOT`);
+        document.getElementById("withdrawAmount").value = ''; // Clear the withdrawal input field
+        document.getElementById("withdrawContainer").style.display = "none"; // Hide the withdrawal section
+        document.getElementById("atmContainer").style.display = "block"; // Show the ATM menu
+    } else {
+        document.getElementById("withdrawError").style.display = "block"; // Show error if invalid input
+    }
+}
+
+
+        function quickWithdraw(amount) {
+            document.getElementById("withdrawAmount").value = amount;
+        }
+
+        function deposit() {
+            const amount = parseFloat(document.getElementById("depositAmount").value);
+            if (!isNaN(amount) && amount > 0) {
+                account.balance += amount;
+                updateBalance();
+                alert(`Deposit successful! You deposited ${amount.toFixed(2)} PETOT`);
+                document.getElementById("depositContainer").style.display = "none";
+                document.getElementById("atmContainer").style.display = "block";
+            } else {
+                document.getElementById("depositError").style.display = "block";
+            }
+        }
+
+        function checkBalance() {
+            const enteredPin = prompt("Please enter your PIN to check balance:");
+            if (enteredPin === account.pin) {
+                alert(`Your current balance is: ${account.balance.toFixed(2)} PETOT`);
+            } else {
+                alert("Incorrect PIN. Please try again.");
+            }
+        }
+
+        function showChangePin() {
+            document.getElementById("atmContainer").style.display = "none";
+            document.getElementById("changePinContainer").style.display = "block";
+        }
+
+        function changePin() {
+    const currentPin = document.getElementById("currentPin").value;
+    const newPin = document.getElementById("newPin").value;
+    const confirmPin = document.getElementById("confirmPin").value;
+
+    if (currentPin === account.pin && newPin === confirmPin && newPin.length === 6) {
+        // Successfully changed the PIN
+        account.pin = newPin;
+        alert("PIN changed successfully!");
+
+        // Hide the change PIN section and go back to the enter PIN screen
+        document.getElementById("changePinContainer").style.display = "none";
+        document.getElementById("pinContainer").style.display = "block";
+
+        // Reset the PIN input field for the user to enter the new PIN
+        document.getElementById("pinInput").value = ''; // Clear the input field
+    } else {
+        document.getElementById("changePinError").style.display = "block";
+    }
+}
+
+
+        function updateBalance() {
+            // This function could be used for updating the balance display (not currently implemented).
+        }
+    </script>
+</body>
+
+</html>
